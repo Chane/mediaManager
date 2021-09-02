@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
@@ -23,10 +22,9 @@ namespace Engine
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(filePath));
             }
 
-            var dir = this.fileSystem.Directory.EnumerateDirectories(filePath, "*", SearchOption.AllDirectories);
-            var listDirectories = dir.ToList();
-            listDirectories.Add(filePath);
-            return listDirectories;
+            var directories = this.fileSystem.Directory.EnumerateDirectories(filePath, "*", SearchOption.AllDirectories).ToList();
+            directories.Add(filePath);
+            return directories;
         }
     }
 }

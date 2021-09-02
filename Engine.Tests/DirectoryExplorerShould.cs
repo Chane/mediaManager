@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Linq;
 using NUnit.Framework;
 
@@ -6,7 +5,6 @@ namespace Engine.Tests
 {
     public class DirectoryExplorerShould
     {
-        // List Directories
         // Create Thumbnail for Images
         // Create Thumbnail for Video
         // List Files in Directories
