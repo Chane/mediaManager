@@ -32,5 +32,30 @@ namespace Engine.Tests
 
             Assert.That(directories.Count, Is.EqualTo(builder.SourceDirectories.Count));
         }
+
+        [Test]
+        public void ListAllFilesInDirectory()
+        {
+            var builder = new FileSystemBuilder();
+            var fileSystem = builder
+                .CreateDefaultFiles()
+                .Build();
+
+            var explorer = new DirectoryExplorer(fileSystem);
+
+            var searchDirectory = "/collection";
+
+            var files = explorer.ListFiles(searchDirectory).ToList();
+
+            var expectedFiles = builder.SourceFilePaths
+                .Where(key => !key.Key.Contains("/sub") && key.Key.StartsWith(searchDirectory)).ToList();
+
+            foreach (var file in expectedFiles)
+            {
+                Assert.That(files, Contains.Item(file.Key));
+            }
+
+            Assert.That(files.Count, Is.EqualTo(expectedFiles.Count));
+        }
     }
 }
