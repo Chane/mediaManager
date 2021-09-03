@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using NUnit.Framework;
 
@@ -7,7 +8,6 @@ namespace Engine.Tests
     {
         // Create Thumbnail for Images
         // Create Thumbnail for Video
-        // List Files in Directories
         // Create MetaData for Files in Directories
         // List MetaData for a directory
 
@@ -48,7 +48,38 @@ namespace Engine.Tests
             var files = explorer.ListFiles(searchDirectory).ToList();
 
             var expectedFiles = builder.SourceFilePaths
-                .Where(key => !key.Key.Contains("/sub") && key.Key.StartsWith(searchDirectory)).ToList();
+                .Where(fileDetail => !fileDetail.Key.Contains("/sub") &&
+                                                               fileDetail.Key.StartsWith(searchDirectory)).ToList();
+
+            foreach (var file in expectedFiles)
+            {
+                Assert.That(files, Contains.Item(file.Key));
+            }
+
+            Assert.That(files.Count, Is.EqualTo(expectedFiles.Count));
+        }
+
+        [TestCase("*.mp4")]
+        [TestCase("*.jpg")]
+        public void ListFilesOfType(string searchPattern)
+        {
+            var builder = new FileSystemBuilder();
+            var fileSystem = builder
+                .CreateDefaultFiles()
+                .Build();
+
+            var explorer = new DirectoryExplorer(fileSystem);
+
+            var searchDirectory = "/collection";
+
+            var files = explorer.ListFiles(searchDirectory, searchPattern).ToList();
+
+            var fileExtension = searchPattern.Replace("*", string.Empty, StringComparison.OrdinalIgnoreCase);
+            var expectedFiles = builder.SourceFilePaths
+                .Where(fileDetail => !fileDetail.Key.Contains("/sub") &&
+                                                               fileDetail.Key.StartsWith(searchDirectory) &&
+                                                               fileDetail.Key.EndsWith(fileExtension))
+                .ToList();
 
             foreach (var file in expectedFiles)
             {

@@ -29,14 +29,19 @@ namespace Engine
             return directories;
         }
 
-        public IEnumerable<string> ListFiles(string filePath)
+        public IEnumerable<string> ListFiles(string filePath, string searchPattern = "*")
         {
+            if (string.IsNullOrWhiteSpace(searchPattern))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(searchPattern));
+            }
+
             if (string.IsNullOrWhiteSpace(filePath))
             {
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(filePath));
             }
 
-            var files = this.fileSystem.Directory.EnumerateFiles(filePath, "*",
+            var files = this.fileSystem.Directory.EnumerateFiles(filePath, searchPattern,
                 SearchOption.TopDirectoryOnly);
 
             return files;
