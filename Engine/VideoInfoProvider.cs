@@ -11,23 +11,32 @@ namespace Engine
     public class VideoInfoProvider
     {
         private readonly IFileSystem fileSystem;
+        private readonly IFFmpegWrapper fFmpegWrapper;
 
-        public VideoInfoProvider(IFileSystem fileSystem) => this.fileSystem = fileSystem;
+        public VideoInfoProvider(IFileSystem fileSystem, IFFmpegWrapper fFmpegWrapper)
+        {
+            this.fileSystem = fileSystem;
+            this.fFmpegWrapper = fFmpegWrapper;
+        }
 
         public async Task<VideoInfo> ProvideAndCreateAsync(string filePath, CancellationToken token)
         {
             var fileName = this.fileSystem.Path.GetFileName(filePath);
-            var executingDirectory = this.fileSystem.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var executingDirectory = this.fileSystem.Path.GetDirectoryName(assemblyLocation);
+
             string OutputFileNameBuilder(string number) => $"{executingDirectory}/{fileName}_thumb_" + number + ".png";
 
-            IMediaInfo info = await FFmpeg.GetMediaInfo(filePath, token).ConfigureAwait(false);
-            IVideoStream videoStream = info.VideoStreams.First()?.SetCodec(VideoCodec.png);
-
-            IConversionResult conversionResult = await FFmpeg.Conversions.New()
-                .AddStream(videoStream)
-                .ExtractNthFrame(300, OutputFileNameBuilder)
-                .Start(token)
+            var info = await this.fFmpegWrapper
+                .GetMediaInfoAsync(filePath, token)
                 .ConfigureAwait(false);
+            var videoStream = info.VideoStreams
+                .First()?
+                .SetCodec(VideoCodec.png);
+
+            var conversionResult = await this.fFmpegWrapper
+                    .ExtractNthFrame(videoStream, OutputFileNameBuilder, 300, token)
+                    .ConfigureAwait(false);
 
             return new VideoInfo(true, conversionResult.Duration);
         }

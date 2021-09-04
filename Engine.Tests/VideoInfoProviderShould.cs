@@ -19,8 +19,9 @@ namespace Engine.Tests
         {
             var tokenSource = new CancellationTokenSource();
             var fileSystem = new FileSystem();
+            var ffmpegWrapper = new FFmpegWrapper();
             var filePath = string.Empty;
-            var provider = new VideoInfoProvider(fileSystem);
+            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapper);
             var videoDetail = await provider.ProvideAndCreateAsync(filePath, tokenSource.Token).ConfigureAwait(false);
 
             Assert.That(videoDetail.Created, Is.EqualTo(true));
