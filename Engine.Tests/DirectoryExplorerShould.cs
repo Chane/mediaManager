@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Engine.Tests.Helpers;
 using NUnit.Framework;
 
 namespace Engine.Tests

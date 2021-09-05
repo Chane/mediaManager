@@ -3,7 +3,7 @@ using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 
-namespace Engine.Tests
+namespace Engine.Tests.Helpers
 {
     public class FileSystemBuilder
     {
