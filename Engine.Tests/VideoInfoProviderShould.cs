@@ -73,7 +73,7 @@ namespace Engine.Tests
         }
 
         [Test, Ignore("Integration Test")]
-        public async Task CreateSnapshotIntegrationTest()
+        public async Task CreateSnapshot_IntegrationTest()
         {
             var tokenSource = new CancellationTokenSource();
             var fileSystem = new FileSystem();
