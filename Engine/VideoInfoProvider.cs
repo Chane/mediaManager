@@ -40,6 +40,22 @@ namespace Engine
 
             return new VideoInfo(true, conversionResult.Duration);
         }
+
+        public async Task<VideoInfo> CreateSnapshot(string filePath, int seconds, CancellationToken token)
+        {
+            var fileName = this.fileSystem.Path.GetFileName(filePath);
+            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
+            var executingDirectory = this.fileSystem.Path.GetDirectoryName(assemblyLocation);
+
+            var outputPath = $"{executingDirectory}/{fileName}_thumb.png";
+
+            var conversionResult = await this.fFmpegWrapper
+                .CreateSnapshot(filePath, seconds, outputPath, token)
+                .ConfigureAwait(false);
+
+
+            return new VideoInfo(true, conversionResult.Duration);
+        }
     }
 
     public record VideoInfo(bool Created, TimeSpan Duration);

@@ -14,5 +14,7 @@ namespace Engine
             Func<string, string> outputFileNameBuilder,
             int frameNumber,
             CancellationToken token);
+
+        Task<IConversionResult> CreateSnapshot(string sourcePath, int seconds, string outputPath, CancellationToken token);
     }
 }

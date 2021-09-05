@@ -24,5 +24,13 @@ namespace Engine
                 .Start(token)
                 .ConfigureAwait(false);
         }
+
+        public async Task<IConversionResult> CreateSnapshot(string sourcePath, int seconds, string outputPath, CancellationToken token)
+        {
+            var conversion = await FFmpeg.Conversions
+                .FromSnippet
+                .Snapshot(sourcePath, outputPath, TimeSpan.FromSeconds(seconds));
+            return await conversion.Start(token);
+        }
     }
 }
