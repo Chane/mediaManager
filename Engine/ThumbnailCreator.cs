@@ -3,11 +3,12 @@ using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 using Engine.Foundation;
+using Engine.Models;
 using Imageflow.Fluent;
 
 namespace Engine
 {
-    public class ThumbnailCreator
+    public class ThumbnailCreator : IThumbnailCreator
     {
         private readonly IFileSystem fileSystem;
         private readonly IWorkingDirectoryProvider workingDirectoryProvider;
@@ -16,6 +17,12 @@ namespace Engine
         {
             this.fileSystem = fileSystem;
             this.workingDirectoryProvider = workingDirectoryProvider;
+        }
+
+        public async Task<ThumbnailResult> CreateAsync(string filePath, CancellationToken token)
+        {
+            var imageBytes = await fileSystem.File.ReadAllBytesAsync(filePath, token);
+            return await this.CreateAsync(imageBytes, token);
         }
 
         public async Task<ThumbnailResult> CreateAsync(byte[] imageBytes, CancellationToken token)
@@ -31,7 +38,9 @@ namespace Engine
                 .ConfigureAwait(false);
 
             var bytes = result.First.TryGetBytes();
+
             var created = bytes.HasValue;
+            var outputPath = string.Empty;
 
             if (created)
             {
@@ -40,13 +49,11 @@ namespace Engine
                 Console.WriteLine(executingDirectory);
 
                 var fileName = "test"; // TODO: Pass in file name details
-                var outputPath = $"{executingDirectory}/{fileName}_thumb.png";
+                outputPath = $"{executingDirectory}/{fileName}_thumb.png";
                 await this.fileSystem.File.WriteAllBytesAsync(outputPath,bytes.Value.Array, token);
             }
 
-            return new ThumbnailResult(created);
+            return new ThumbnailResult(created, outputPath);
         }
     }
-
-    public record ThumbnailResult(bool Created);
 }

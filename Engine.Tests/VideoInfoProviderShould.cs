@@ -5,6 +5,7 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Threading;
 using System.Threading.Tasks;
 using Engine.Foundation;
+using Engine.Providers;
 using Moq;
 using NUnit.Framework;
 using Xabe.FFmpeg;
@@ -24,6 +25,7 @@ namespace Engine.Tests
         {
             var tokenSource = new CancellationTokenSource();
             var fileSystem = new MockFileSystem();
+            var filePath = string.Empty;
 
             var mediaInfoMock = new Mock<IMediaInfo>();
             mediaInfoMock.Setup(m => m.VideoStreams)
@@ -33,21 +35,19 @@ namespace Engine.Tests
             conversionResultMock.Setup(m => m.Duration)
                 .Returns(default(TimeSpan));
 
-            var ffmpegWrapper = new Mock<IFFmpegWrapper>();
-            ffmpegWrapper.Setup(m => m.ExtractNthFrame(
-                    It.IsAny<IVideoStream>(),
-                    It.IsAny<Func<string,string>>(),
-                    It.IsAny<int>(),
+            var ffmpegWrapperMock = new Mock<IFFmpegWrapper>();
+            ffmpegWrapperMock.Setup(m => m.CreateSnapshot(filePath,
+                    30,
+                    It.IsAny<string>(),
                     tokenSource.Token))
                 .ReturnsAsync(conversionResultMock.Object);
-            ffmpegWrapper.Setup(m => m.GetMediaInfoAsync(It.IsAny<string>(), tokenSource.Token))
+            ffmpegWrapperMock.Setup(m => m.GetMediaInfoAsync(It.IsAny<string>(), tokenSource.Token))
                 .ReturnsAsync(mediaInfoMock.Object);
 
-            var filePath = string.Empty;
-            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapper.Object, new WorkingDirectoryProvider(fileSystem));
+            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapperMock.Object, new WorkingDirectoryProvider(fileSystem), Mock.Of<IThumbnailCreator>());
             var videoDetail = await provider.ProvideAndCreateAsync(filePath, tokenSource.Token).ConfigureAwait(false);
 
-            Assert.That(videoDetail.Created, Is.EqualTo(true));
+            Assert.That(videoDetail, Is.Not.Null);
         }
 
         [Test]
@@ -58,6 +58,7 @@ namespace Engine.Tests
             var fileSystem = new MockFileSystem();
 
             var conversionResultMock = new Mock<IConversionResult>();
+            conversionResultMock.Setup(m => m.Duration).Returns(default(TimeSpan));
             var ffmpegWrapperMock = new Mock<IFFmpegWrapper>();
             ffmpegWrapperMock.Setup(m => m.CreateSnapshot(filePath,
                                                                                 30,
@@ -65,11 +66,11 @@ namespace Engine.Tests
                                                                                 tokenSource.Token))
                 .ReturnsAsync(conversionResultMock.Object);
 
-            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapperMock.Object, new WorkingDirectoryProvider(fileSystem));
-            var videoDetail = await provider.CreateSnapshot(filePath, 30, tokenSource.Token)
+            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapperMock.Object, new WorkingDirectoryProvider(fileSystem), Mock.Of<IThumbnailCreator>());
+            var snapshotResult = await provider.CreateSnapshot(filePath, 30, tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.That(videoDetail.Created, Is.EqualTo(true));
+            Assert.That(snapshotResult.Created, Is.EqualTo(true));
         }
 
         [Test, Ignore("Integration Test")]
@@ -79,11 +80,11 @@ namespace Engine.Tests
             var fileSystem = new FileSystem();
             var ffmpegWrapper = new FFmpegWrapper();
             var filePath = string.Empty;
-            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapper, new WorkingDirectoryProvider(fileSystem));
-            var videoDetail = await provider.CreateSnapshot(filePath, 30, tokenSource.Token)
+            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapper, new WorkingDirectoryProvider(fileSystem), Mock.Of<IThumbnailCreator>());
+            var snapshotResult = await provider.CreateSnapshot(filePath, 30, tokenSource.Token)
                 .ConfigureAwait(false);
 
-            Assert.That(videoDetail.Created, Is.EqualTo(true));
+            Assert.That(snapshotResult.Created, Is.EqualTo(true));
         }
     }
 }
