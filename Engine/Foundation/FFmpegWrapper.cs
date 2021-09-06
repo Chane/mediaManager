@@ -27,10 +27,22 @@ namespace Engine.Foundation
 
         public async Task<IConversionResult> CreateSnapshot(string sourcePath, int seconds, string outputPath, CancellationToken token)
         {
-            var conversion = await FFmpeg.Conversions
-                .FromSnippet
-                .Snapshot(sourcePath, outputPath, TimeSpan.FromSeconds(seconds));
-            return await conversion.Start(token);
+            try
+            {
+                var conversion = await FFmpeg.Conversions
+                    .FromSnippet
+                    .Snapshot(sourcePath, outputPath, TimeSpan.FromSeconds(seconds));
+                return await conversion.Start(token);
+            }
+            catch (System.ArgumentException e)
+            {
+                Console.WriteLine(e);
+
+                var conversion = await FFmpeg.Conversions
+                    .FromSnippet
+                    .Snapshot(sourcePath, outputPath, TimeSpan.FromSeconds(1));
+                return await conversion.Start(token);
+            }
         }
     }
 }
