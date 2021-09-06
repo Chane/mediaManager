@@ -8,11 +8,6 @@ namespace Engine.Tests
     [TestFixture]
     public class DirectoryExplorerShould
     {
-        // Create Thumbnail for Images
-        // Create Thumbnail for Video
-        // Create MetaData for Files in Directories
-        // List MetaData for a directory
-
         [Test]
         public void ListDirectories()
         {

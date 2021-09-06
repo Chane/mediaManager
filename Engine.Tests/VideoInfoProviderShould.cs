@@ -15,11 +15,6 @@ namespace Engine.Tests
     [TestFixture]
     public class VideoInfoProviderShould
     {
-        // Create Thumbnail
-        // Not recreate thumbnail
-        // Specify directory for thumbs, use structure from base folder
-        // Read Metadata
-
         [Test]
         public async Task ProvideAndCreate()
         {
