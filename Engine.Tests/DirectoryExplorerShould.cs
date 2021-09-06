@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace Engine.Tests
 {
+    [TestFixture]
     public class DirectoryExplorerShould
     {
         // Create Thumbnail for Images
