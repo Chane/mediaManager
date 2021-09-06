@@ -16,9 +16,8 @@ namespace Engine.Tests
     {
         // Create Thumbnail
         // Not recreate thumbnail
-        // Specify directory for thumbs
+        // Specify directory for thumbs, use structure from base folder
         // Read Metadata
-        // store thumbs smaller
 
         [Test]
         public async Task ProvideAndCreate()
