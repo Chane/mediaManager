@@ -1,7 +1,7 @@
 using System.IO.Abstractions;
 using System.Reflection;
 
-namespace Engine
+namespace Engine.Foundation
 {
     public class WorkingDirectoryProvider : IWorkingDirectoryProvider
     {

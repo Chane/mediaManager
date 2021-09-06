@@ -2,6 +2,7 @@ using System;
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
+using Engine.Foundation;
 using Imageflow.Fluent;
 
 namespace Engine

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
 
-namespace Engine
+namespace Engine.Foundation
 {
     public interface IFFmpegWrapper
     {

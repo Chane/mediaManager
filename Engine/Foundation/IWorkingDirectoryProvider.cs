@@ -1,4 +1,4 @@
-namespace Engine
+namespace Engine.Foundation
 {
     public interface IWorkingDirectoryProvider
     {

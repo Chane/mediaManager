@@ -4,6 +4,7 @@ using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using System.Threading;
 using System.Threading.Tasks;
+using Engine.Foundation;
 using Moq;
 using NUnit.Framework;
 using Xabe.FFmpeg;
