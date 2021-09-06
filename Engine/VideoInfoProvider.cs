@@ -1,7 +1,6 @@
 using System;
 using System.IO.Abstractions;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
@@ -12,18 +11,19 @@ namespace Engine
     {
         private readonly IFileSystem fileSystem;
         private readonly IFFmpegWrapper fFmpegWrapper;
+        private readonly IWorkingDirectoryProvider workingDirectoryProvider;
 
-        public VideoInfoProvider(IFileSystem fileSystem, IFFmpegWrapper fFmpegWrapper)
+        public VideoInfoProvider(IFileSystem fileSystem, IFFmpegWrapper fFmpegWrapper, IWorkingDirectoryProvider workingDirectoryProvider)
         {
             this.fileSystem = fileSystem;
             this.fFmpegWrapper = fFmpegWrapper;
+            this.workingDirectoryProvider = workingDirectoryProvider;
         }
 
         public async Task<VideoInfo> ProvideAndCreateAsync(string filePath, CancellationToken token)
         {
             var fileName = this.fileSystem.Path.GetFileName(filePath);
-            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            var executingDirectory = this.fileSystem.Path.GetDirectoryName(assemblyLocation);
+            var executingDirectory = this.workingDirectoryProvider.CurrentExecutingDirectory();
 
             string OutputFileNameBuilder(string number) => $"{executingDirectory}/{fileName}_thumb_" + number + ".png";
 
@@ -44,15 +44,13 @@ namespace Engine
         public async Task<VideoInfo> CreateSnapshot(string filePath, int seconds, CancellationToken token)
         {
             var fileName = this.fileSystem.Path.GetFileName(filePath);
-            var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-            var executingDirectory = this.fileSystem.Path.GetDirectoryName(assemblyLocation);
+            var executingDirectory = workingDirectoryProvider.CurrentExecutingDirectory();
 
             var outputPath = $"{executingDirectory}/{fileName}_thumb.png";
 
             var conversionResult = await this.fFmpegWrapper
                 .CreateSnapshot(filePath, seconds, outputPath, token)
                 .ConfigureAwait(false);
-
 
             return new VideoInfo(true, conversionResult.Duration);
         }

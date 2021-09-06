@@ -44,7 +44,7 @@ namespace Engine.Tests
                 .ReturnsAsync(mediaInfoMock.Object);
 
             var filePath = string.Empty;
-            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapper.Object);
+            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapper.Object, new WorkingDirectoryProvider(fileSystem));
             var videoDetail = await provider.ProvideAndCreateAsync(filePath, tokenSource.Token).ConfigureAwait(false);
 
             Assert.That(videoDetail.Created, Is.EqualTo(true));
@@ -65,7 +65,7 @@ namespace Engine.Tests
                                                                                 tokenSource.Token))
                 .ReturnsAsync(conversionResultMock.Object);
 
-            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapperMock.Object);
+            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapperMock.Object, new WorkingDirectoryProvider(fileSystem));
             var videoDetail = await provider.CreateSnapshot(filePath, 30, tokenSource.Token)
                 .ConfigureAwait(false);
 
@@ -79,7 +79,7 @@ namespace Engine.Tests
             var fileSystem = new FileSystem();
             var ffmpegWrapper = new FFmpegWrapper();
             var filePath = string.Empty;
-            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapper);
+            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapper, new WorkingDirectoryProvider(fileSystem));
             var videoDetail = await provider.CreateSnapshot(filePath, 30, tokenSource.Token)
                 .ConfigureAwait(false);
 
