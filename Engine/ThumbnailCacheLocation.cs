@@ -2,7 +2,7 @@ using Engine.Foundation;
 
 namespace Engine
 {
-    public class ThumbnailCacheLocation
+    public class ThumbnailCacheLocation : IThumbnailCacheLocation
     {
         private readonly IWorkingDirectoryProvider workingDirectoryProvider;
 
