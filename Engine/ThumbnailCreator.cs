@@ -25,7 +25,7 @@ namespace Engine
             return await this.CreateAsync(imageBytes, token);
         }
 
-        public async Task<ThumbnailResult> CreateAsync(byte[] imageBytes, CancellationToken token)
+        internal async Task<ThumbnailResult> CreateAsync(byte[] imageBytes, CancellationToken token)
         {
             using var imageJob = new ImageJob();
             var encoder = new PngQuantEncoder();
