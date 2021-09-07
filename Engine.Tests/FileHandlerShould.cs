@@ -42,6 +42,17 @@ namespace Engine.Tests
             this.imageInfoProviderMock.Verify(v => v.ProvideAndCreateAsync(filePath, cancellationTokenSource.Token));
         }
 
+        [Test]
+        public async Task ReturnNull()
+        {
+            var cancellationTokenSource = new CancellationTokenSource();
+
+            var handler = this.Create();
+            var result = await handler.HandleAsync("/blah.text", cancellationTokenSource.Token);
+
+            Assert.That(result, Is.Null);
+        }
+
         private FileHandler Create() => new FileHandler(this.videoInfoProviderMock.Object, this.imageInfoProviderMock.Object);
     }
 }

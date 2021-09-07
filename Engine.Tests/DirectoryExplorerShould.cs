@@ -1,4 +1,5 @@
 using System;
+using System.IO.Abstractions;
 using System.Linq;
 using Engine.Tests.Helpers;
 using NUnit.Framework;
@@ -84,6 +85,24 @@ namespace Engine.Tests
             }
 
             Assert.That(files.Count, Is.EqualTo(expectedFiles.Count));
+        }
+
+        [TestCase("")]
+        [TestCase(null)]
+        public void ListDirectories_HasGuardClause(string filePath)
+        {
+            var explorer = new DirectoryExplorer(new FileSystem());
+            Assert.Throws<ArgumentException>(() => explorer.ListDirectories(filePath));
+        }
+
+        [TestCase("", "abc")]
+        [TestCase(null, "abc")]
+        [TestCase("abc", "")]
+        [TestCase("abc",null)]
+        public void ListDirectories_HasGuardClause(string filePath, string searchPattern)
+        {
+            var explorer = new DirectoryExplorer(new FileSystem());
+            Assert.Throws<ArgumentException>(() => explorer.ListFiles(filePath, searchPattern));
         }
     }
 }
