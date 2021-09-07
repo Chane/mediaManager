@@ -1,10 +1,12 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
 
 namespace Engine.Foundation
 {
+    [ExcludeFromCodeCoverage]
     public class FFmpegWrapper : IFFmpegWrapper
     {
         public async Task<IMediaInfo> GetMediaInfoAsync(string filePath, CancellationToken token)
