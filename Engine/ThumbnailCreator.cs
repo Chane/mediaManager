@@ -2,7 +2,6 @@ using System;
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
-using Engine.Foundation;
 using Engine.Models;
 using Imageflow.Fluent;
 
@@ -11,21 +10,21 @@ namespace Engine
     public class ThumbnailCreator : IThumbnailCreator
     {
         private readonly IFileSystem fileSystem;
-        private readonly IWorkingDirectoryProvider workingDirectoryProvider;
+        private readonly IThumbnailCacheLocationProvider thumbnailCacheLocation;
 
-        public ThumbnailCreator(IFileSystem fileSystem, IWorkingDirectoryProvider workingDirectoryProvider)
+        public ThumbnailCreator(IFileSystem fileSystem, IThumbnailCacheLocationProvider thumbnailCacheLocation)
         {
             this.fileSystem = fileSystem;
-            this.workingDirectoryProvider = workingDirectoryProvider;
+            this.thumbnailCacheLocation = thumbnailCacheLocation;
         }
 
         public async Task<ThumbnailResult> CreateAsync(string filePath, CancellationToken token)
         {
             var imageBytes = await fileSystem.File.ReadAllBytesAsync(filePath, token);
-            return await this.CreateAsync(imageBytes, token);
+            return await this.CreateAsync(filePath, imageBytes, token);
         }
 
-        internal async Task<ThumbnailResult> CreateAsync(byte[] imageBytes, CancellationToken token)
+        private async Task<ThumbnailResult> CreateAsync(string filePath, byte[] imageBytes, CancellationToken token)
         {
             using var imageJob = new ImageJob();
             var encoder = new PngQuantEncoder();
@@ -40,20 +39,23 @@ namespace Engine
             var bytes = result.First.TryGetBytes();
 
             var created = bytes.HasValue;
-            var outputPath = string.Empty;
+            var outputFile = string.Empty;
 
             if (created)
             {
-                var executingDirectory = this.workingDirectoryProvider.CurrentExecutingDirectory();
+                var (directory, fileName) = this.thumbnailCacheLocation.ProvideLocation(filePath);
 
-                Console.WriteLine(executingDirectory);
+                Console.WriteLine($"Directory         :: {directory}");
 
-                var fileName = "test"; // TODO: Pass in file name details
-                outputPath = $"{executingDirectory}/{fileName}_thumb.png";
-                await this.fileSystem.File.WriteAllBytesAsync(outputPath,bytes.Value.Array, token);
+                this.fileSystem.Directory.CreateDirectory(this.fileSystem.Path.GetDirectoryName($"{directory}/"));
+
+                outputFile = $"{directory}/{fileName}_thumb.png";
+                Console.WriteLine($"Output File       :: {outputFile}");
+
+                await this.fileSystem.File.WriteAllBytesAsync(outputFile, bytes.Value.Array, token);
             }
 
-            return new ThumbnailResult(created, outputPath);
+            return new ThumbnailResult(created, outputFile);
         }
     }
 }
