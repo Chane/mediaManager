@@ -1,4 +1,4 @@
-using System;
+using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +43,7 @@ namespace Engine.Providers
 
             var outputPath = $"{cacheLocation.Directory}/{cacheLocation.FileName}_snap.png";
 
-            Console.WriteLine($"Output Path :: {outputPath}");
+            Debug.WriteLine($"Output Path :: {outputPath}");
 
             var conversionResult = await this.fFmpegWrapper
                 .CreateSnapshot(filePath, seconds, outputPath, token)

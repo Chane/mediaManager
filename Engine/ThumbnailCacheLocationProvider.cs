@@ -1,4 +1,4 @@
-using System;
+using System.Diagnostics;
 using System.Linq;
 using Engine.Foundation;
 using Engine.Models;
@@ -35,15 +35,15 @@ namespace Engine
                 var executingDirectory = this.workingDirectoryProvider.CurrentExecutingDirectory();
                 var cacheDirectory = string.Join("/", sourceFilePath.Split("/").SkipLast(1));
 
-                Console.WriteLine($"Cache Directory   :: {cacheDirectory}");
+                Debug.WriteLine($"Cache Directory   :: {cacheDirectory}");
 
                 var directory = $"{executingDirectory}/_cache{cacheDirectory}";
 
-                Console.WriteLine($"Directory         :: {directory}");
+                Debug.WriteLine($"Directory         :: {directory}");
 
                 var fileName = FileName(sourceFilePath);
 
-                Console.WriteLine($"File Name         :: {fileName}");
+                Debug.WriteLine($"File Name         :: {fileName}");
 
                 thumbnailCacheLocation = new ThumbnailCacheLocation(directory, fileName);
             }

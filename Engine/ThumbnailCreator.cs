@@ -1,4 +1,4 @@
-using System;
+using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,12 +53,12 @@ namespace Engine
                     ? this.thumbnailCacheLocation.ProvideLocation(destinationPath)
                     : this.thumbnailCacheLocation.ProvideLocation(filePath);
 
-                Console.WriteLine($"Directory         :: {directory}");
+                Debug.WriteLine($"Directory         :: {directory}");
 
                 this.fileSystem.Directory.CreateDirectory(this.fileSystem.Path.GetDirectoryName($"{directory}/"));
 
                 outputFile = $"{directory}/{fileName}_thumb.png";
-                Console.WriteLine($"Output File       :: {outputFile}");
+                Debug.WriteLine($"Output File       :: {outputFile}");
 
                 await this.fileSystem.File.WriteAllBytesAsync(outputFile, bytes.Value.Array, token);
             }
