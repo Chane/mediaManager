@@ -21,10 +21,16 @@ namespace Engine
         public async Task<ThumbnailResult> CreateAsync(string filePath, CancellationToken token)
         {
             var imageBytes = await fileSystem.File.ReadAllBytesAsync(filePath, token);
-            return await this.CreateAsync(filePath, imageBytes, token);
+            return await this.CreateAsync(filePath, null, imageBytes, token);
         }
 
-        private async Task<ThumbnailResult> CreateAsync(string filePath, byte[] imageBytes, CancellationToken token)
+        public async Task<ThumbnailResult> CreateAsync(string filePath, string destinationPath, CancellationToken token)
+        {
+            var imageBytes = await fileSystem.File.ReadAllBytesAsync(filePath, token);
+            return await this.CreateAsync(filePath, destinationPath, imageBytes, token);
+        }
+
+        private async Task<ThumbnailResult> CreateAsync(string filePath, string destinationPath, byte[] imageBytes, CancellationToken token)
         {
             using var imageJob = new ImageJob();
             var encoder = new PngQuantEncoder();
@@ -43,7 +49,9 @@ namespace Engine
 
             if (created)
             {
-                var (directory, fileName) = this.thumbnailCacheLocation.ProvideLocation(filePath);
+                var (directory, fileName) = destinationPath != null
+                    ? this.thumbnailCacheLocation.ProvideLocation(destinationPath)
+                    : this.thumbnailCacheLocation.ProvideLocation(filePath);
 
                 Console.WriteLine($"Directory         :: {directory}");
 
