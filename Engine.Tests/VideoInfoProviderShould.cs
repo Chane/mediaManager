@@ -5,6 +5,7 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Threading;
 using System.Threading.Tasks;
 using Engine.Foundation;
+using Engine.Models;
 using Engine.Providers;
 using Moq;
 using NUnit.Framework;
@@ -39,7 +40,11 @@ namespace Engine.Tests
             ffmpegWrapperMock.Setup(m => m.GetMediaInfoAsync(It.IsAny<string>(), tokenSource.Token))
                 .ReturnsAsync(mediaInfoMock.Object);
 
-            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapperMock.Object, new WorkingDirectoryProvider(fileSystem), Mock.Of<IThumbnailCreator>());
+            var thumbnailCacheLocationProviderMock = new Mock<IThumbnailCacheLocationProvider>();
+            thumbnailCacheLocationProviderMock.Setup(m => m.ProvideLocation(It.IsAny<string>()))
+                .Returns(new ThumbnailCacheLocation(string.Empty, string.Empty));
+
+            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapperMock.Object, thumbnailCacheLocationProviderMock.Object, Mock.Of<IThumbnailCreator>());
             var videoDetail = await provider.ProvideAndCreateAsync(filePath, tokenSource.Token).ConfigureAwait(false);
 
             Assert.That(videoDetail, Is.Not.Null);
@@ -48,8 +53,8 @@ namespace Engine.Tests
         [Test]
         public async Task CreateSnapshot()
         {
+            const string filePath = "/a/path";
             var tokenSource = new CancellationTokenSource();
-            var filePath = "/a/path";
             var fileSystem = new MockFileSystem();
 
             var conversionResultMock = new Mock<IConversionResult>();
@@ -61,7 +66,11 @@ namespace Engine.Tests
                                                                                 tokenSource.Token))
                 .ReturnsAsync(conversionResultMock.Object);
 
-            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapperMock.Object, new WorkingDirectoryProvider(fileSystem), Mock.Of<IThumbnailCreator>());
+            var thumbnailCacheLocationProviderMock = new Mock<IThumbnailCacheLocationProvider>();
+            thumbnailCacheLocationProviderMock.Setup(m => m.ProvideLocation(It.IsAny<string>()))
+                .Returns(new ThumbnailCacheLocation(string.Empty, string.Empty));
+
+            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapperMock.Object, thumbnailCacheLocationProviderMock.Object, Mock.Of<IThumbnailCreator>());
             var snapshotResult = await provider.CreateSnapshot(filePath, 30, tokenSource.Token)
                 .ConfigureAwait(false);
 
@@ -75,7 +84,7 @@ namespace Engine.Tests
             var fileSystem = new FileSystem();
             var ffmpegWrapper = new FFmpegWrapper();
             var filePath = string.Empty;
-            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapper, new WorkingDirectoryProvider(fileSystem), Mock.Of<IThumbnailCreator>());
+            var provider = new VideoInfoProvider(fileSystem, ffmpegWrapper, new ThumbnailCacheLocationProvider(new WorkingDirectoryProvider(fileSystem)), Mock.Of<IThumbnailCreator>());
             var snapshotResult = await provider.CreateSnapshot(filePath, 30, tokenSource.Token)
                 .ConfigureAwait(false);
 

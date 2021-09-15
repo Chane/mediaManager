@@ -1,3 +1,4 @@
+using System;
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,14 +11,14 @@ namespace Engine.Providers
     {
         private readonly IFileSystem fileSystem;
         private readonly IFFmpegWrapper fFmpegWrapper;
-        private readonly IWorkingDirectoryProvider workingDirectoryProvider;
+        private readonly IThumbnailCacheLocationProvider thumbnailCacheLocationProvider;
         private readonly IThumbnailCreator thumbnailCreator;
 
-        public VideoInfoProvider(IFileSystem fileSystem, IFFmpegWrapper fFmpegWrapper, IWorkingDirectoryProvider workingDirectoryProvider, IThumbnailCreator thumbnailCreator)
+        public VideoInfoProvider(IFileSystem fileSystem, IFFmpegWrapper fFmpegWrapper, IThumbnailCacheLocationProvider thumbnailCacheLocationProvider, IThumbnailCreator thumbnailCreator)
         {
             this.fileSystem = fileSystem;
             this.fFmpegWrapper = fFmpegWrapper;
-            this.workingDirectoryProvider = workingDirectoryProvider;
+            this.thumbnailCacheLocationProvider = thumbnailCacheLocationProvider;
             this.thumbnailCreator = thumbnailCreator;
         }
 
@@ -29,17 +30,18 @@ namespace Engine.Providers
 
             var result = await CreateSnapshot(filePath, 30, token);
 
-            await this.thumbnailCreator.CreateAsync(result.SnapshotPath, token);
+            await this.thumbnailCreator.CreateAsync(result.SnapshotPath, result.SnapshotPath.Replace("_snap", string.Empty), token);
 
             return new VideoMetaData(filePath, result.SnapshotPath, 0, 0, info.Size, info.Duration);
         }
 
         public async Task<SnapshotResult> CreateSnapshot(string filePath, int seconds, CancellationToken token)
         {
-            var fileName = this.fileSystem.Path.GetFileName(filePath);
-            var executingDirectory = workingDirectoryProvider.CurrentExecutingDirectory();
+            var cacheLocation = this.thumbnailCacheLocationProvider.ProvideLocation(filePath);
 
-            var outputPath = $"{executingDirectory}/{fileName}_thumb.png";
+            var outputPath = $"{cacheLocation.Directory}/{cacheLocation.FileName}_snap.png";
+
+            Console.WriteLine($"Output Path :: {outputPath}");
 
             var conversionResult = await this.fFmpegWrapper
                 .CreateSnapshot(filePath, seconds, outputPath, token)
