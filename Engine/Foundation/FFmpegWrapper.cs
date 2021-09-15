@@ -38,8 +38,6 @@ namespace Engine.Foundation
             }
             catch (System.ArgumentException e)
             {
-                Console.WriteLine(e);
-
                 var conversion = await FFmpeg.Conversions
                     .FromSnippet
                     .Snapshot(sourcePath, outputPath, TimeSpan.FromSeconds(1));
