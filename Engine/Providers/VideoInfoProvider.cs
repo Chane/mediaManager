@@ -32,6 +32,8 @@ namespace Engine.Providers
 
             await this.thumbnailCreator.CreateAsync(result.SnapshotPath, result.SnapshotPath.Replace("_snap", string.Empty), token);
 
+            this.fileSystem.File.Delete(result.SnapshotPath);
+
             return new VideoMetaData(filePath, result.SnapshotPath, 0, 0, info.Size, info.Duration);
         }
 
