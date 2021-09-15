@@ -23,5 +23,18 @@ namespace Engine.Tests
             Assert.That(result.Directory, Is.EqualTo($"{workingDirectory}/_cache{filepath}"));
             Assert.That(result.FileName, Is.EqualTo(file));
         }
+
+        [Test]
+        public void ProvideLocationForCachedAssets()
+        {
+            const string file = "image1";
+            const string filepath = "/app/debug/_cache/collection/images";
+
+            var thumbnailCacheLocation = new ThumbnailCacheLocationProvider(Mock.Of<IWorkingDirectoryProvider>());
+            var result = thumbnailCacheLocation.ProvideLocation($"{filepath}/{file}.jpg");
+
+            Assert.That(result.Directory, Is.EqualTo(filepath));
+            Assert.That(result.FileName, Is.EqualTo(file));
+        }
     }
 }

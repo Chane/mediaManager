@@ -16,21 +16,39 @@ namespace Engine
 
         public ThumbnailCacheLocation ProvideLocation(string sourceFilePath)
         {
-            var executingDirectory = this.workingDirectoryProvider.CurrentExecutingDirectory();
-            var cacheDirectory = string.Join("/", sourceFilePath.Split("/").SkipLast(1));
+            string FileName(string filePath)
+            {
+                var fileNameParts = filePath.Split("/").Last().Split(".").SkipLast(1);
+                var fileName = string.Join(".", fileNameParts);
+                return fileName;
+            }
 
-            Console.WriteLine($"Cache Directory   :: {cacheDirectory}");
+            ThumbnailCacheLocation thumbnailCacheLocation;
+            if (sourceFilePath.Contains("_cache"))
+            {
+                var cacheDirectory = string.Join("/", sourceFilePath.Split("/").SkipLast(1));
+                var fileName = FileName(sourceFilePath);
+                thumbnailCacheLocation = new ThumbnailCacheLocation(cacheDirectory, fileName);
+            }
+            else
+            {
+                var executingDirectory = this.workingDirectoryProvider.CurrentExecutingDirectory();
+                var cacheDirectory = string.Join("/", sourceFilePath.Split("/").SkipLast(1));
 
-            var directory = $"{executingDirectory}/_cache{cacheDirectory}";
+                Console.WriteLine($"Cache Directory   :: {cacheDirectory}");
 
-            Console.WriteLine($"Directory         :: {directory}");
+                var directory = $"{executingDirectory}/_cache{cacheDirectory}";
 
-            var fileNameParts = sourceFilePath.Split("/").Last().Split(".").SkipLast(1);
-            var fileName = string.Join(".", fileNameParts);
+                Console.WriteLine($"Directory         :: {directory}");
 
-            Console.WriteLine($"File Name         :: {fileName}");
+                var fileName = FileName(sourceFilePath);
 
-            return new ThumbnailCacheLocation(directory, fileName);
+                Console.WriteLine($"File Name         :: {fileName}");
+
+                thumbnailCacheLocation = new ThumbnailCacheLocation(directory, fileName);
+            }
+
+            return thumbnailCacheLocation;
         }
     }
 }
