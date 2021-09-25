@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Abstractions;
 using System.Reflection;
 
 namespace Engine.Foundation
 {
+    [ExcludeFromCodeCoverage]
     public class WorkingDirectoryProvider : IWorkingDirectoryProvider
     {
         private readonly IFileSystem fileSystem;
