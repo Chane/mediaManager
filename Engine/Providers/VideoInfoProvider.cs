@@ -7,7 +7,7 @@ using Engine.Models;
 
 namespace Engine.Providers
 {
-    public class VideoInfoProvider : IVideoInfoProvider
+    public class VideoInfoProvider : IMetaDataProvider<VideoMetaData>
     {
         private readonly IFileSystem fileSystem;
         private readonly IFFmpegWrapper fFmpegWrapper;

@@ -4,7 +4,7 @@ using Engine.Models;
 
 namespace Engine.Providers
 {
-    public class ImageInfoProvider : IImageInfoProvider
+    public class ImageInfoProvider : IMetaDataProvider<ImageMetaData>
     {
         private readonly IThumbnailCreator thumbnailCreator;
 

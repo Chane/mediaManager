@@ -8,10 +8,10 @@ namespace Engine
 {
     public class FileHandler
     {
-        private readonly IVideoInfoProvider videoInfoProvider;
-        private readonly IImageInfoProvider imageInfoProvider;
+        private readonly IMetaDataProvider<VideoMetaData> videoInfoProvider;
+        private readonly IMetaDataProvider<ImageMetaData> imageInfoProvider;
 
-        public FileHandler(IVideoInfoProvider videoInfoProvider, IImageInfoProvider imageInfoProvider)
+        public FileHandler(IMetaDataProvider<VideoMetaData> videoInfoProvider, IMetaDataProvider<ImageMetaData> imageInfoProvider)
         {
             this.videoInfoProvider = videoInfoProvider;
             this.imageInfoProvider = imageInfoProvider;

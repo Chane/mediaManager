@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Engine.Models;
 using Engine.Providers;
 using Moq;
 using NUnit.Framework;
@@ -9,14 +10,14 @@ namespace Engine.Tests
     [TestFixture]
     public class FileHandlerShould
     {
-        private Mock<IVideoInfoProvider> videoInfoProviderMock;
-        private Mock<IImageInfoProvider> imageInfoProviderMock;
+        private Mock<IMetaDataProvider<VideoMetaData>> videoInfoProviderMock;
+        private Mock<IMetaDataProvider<ImageMetaData>> imageInfoProviderMock;
 
         [SetUp]
         public void Setup()
         {
-            this.videoInfoProviderMock = new Mock<IVideoInfoProvider>();
-            this.imageInfoProviderMock = new Mock<IImageInfoProvider>();
+            this.videoInfoProviderMock = new Mock<IMetaDataProvider<VideoMetaData>>();
+            this.imageInfoProviderMock = new Mock<IMetaDataProvider<ImageMetaData>>();
         }
 
         [TestCase("/video.mp4")]
