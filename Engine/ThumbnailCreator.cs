@@ -48,7 +48,13 @@ namespace Engine
             using var imageJob = new ImageJob();
             var encoder = new PngQuantEncoder();
             var result = await imageJob.Decode(imageBytes)
-                .ConstrainWithin(120, 120)
+                .Constrain(new Constraint(ConstraintMode.Within_Pad,120,120)
+                {
+                    CanvasColor = AnyColor.Transparent,
+                    H = 120,
+                    W = 120,
+                    Mode = ConstraintMode.Within_Pad
+                })
                 .EncodeToBytes(encoder)
                 .Finish()
                 .WithCancellationToken(token)
