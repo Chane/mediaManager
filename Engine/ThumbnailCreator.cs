@@ -32,6 +32,19 @@ namespace Engine
 
         private async Task<ThumbnailResult> CreateAsync(string filePath, string destinationPath, byte[] imageBytes, CancellationToken token)
         {
+            var (directory, fileName) = destinationPath != null
+                ? this.thumbnailCacheLocation.ProvideLocation(destinationPath)
+                : this.thumbnailCacheLocation.ProvideLocation(filePath);
+            var outputFile = $"{directory}/{fileName}_thumb.png";
+
+            Debug.WriteLine($"Directory         :: {directory}");
+            Debug.WriteLine($"Output File       :: {outputFile}");
+
+            if (this.fileSystem.File.Exists(outputFile))
+            {
+                return new ThumbnailResult(false, outputFile);
+            }
+
             using var imageJob = new ImageJob();
             var encoder = new PngQuantEncoder();
             var result = await imageJob.Decode(imageBytes)
@@ -45,21 +58,10 @@ namespace Engine
             var bytes = result.First.TryGetBytes();
 
             var created = bytes.HasValue;
-            var outputFile = string.Empty;
 
             if (created)
             {
-                var (directory, fileName) = destinationPath != null
-                    ? this.thumbnailCacheLocation.ProvideLocation(destinationPath)
-                    : this.thumbnailCacheLocation.ProvideLocation(filePath);
-
-                Debug.WriteLine($"Directory         :: {directory}");
-
                 this.fileSystem.Directory.CreateDirectory(this.fileSystem.Path.GetDirectoryName($"{directory}/"));
-
-                outputFile = $"{directory}/{fileName}_thumb.png";
-                Debug.WriteLine($"Output File       :: {outputFile}");
-
                 await this.fileSystem.File.WriteAllBytesAsync(outputFile, bytes.Value.Array, token);
             }
 
