@@ -36,7 +36,7 @@ namespace Engine.Foundation
                     .Snapshot(sourcePath, outputPath, TimeSpan.FromSeconds(seconds));
                 return await conversion.Start(token);
             }
-            catch (System.ArgumentException e)
+            catch (System.ArgumentException)
             {
                 var conversion = await FFmpeg.Conversions
                     .FromSnippet
