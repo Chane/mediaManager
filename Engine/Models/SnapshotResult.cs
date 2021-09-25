@@ -1,6 +1,4 @@
-using System;
-
 namespace Engine.Models
 {
-    public record SnapshotResult(bool Created, string SnapshotPath, TimeSpan Duration);
+    public record SnapshotResult(bool Created, string SnapshotPath);
 }

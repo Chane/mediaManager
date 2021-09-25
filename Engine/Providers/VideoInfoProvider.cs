@@ -45,11 +45,11 @@ namespace Engine.Providers
 
             Debug.WriteLine($"Output Path :: {outputPath}");
 
-            var conversionResult = await this.fFmpegWrapper
+            await this.fFmpegWrapper
                 .CreateSnapshot(filePath, seconds, outputPath, token)
                 .ConfigureAwait(false);
 
-            return new SnapshotResult(true, outputPath, conversionResult.Duration);
+            return new SnapshotResult(true, outputPath);
         }
     }
 }
