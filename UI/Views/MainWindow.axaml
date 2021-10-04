@@ -2,15 +2,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ui="clr-namespace:UI"
         xmlns:viewModels="clr-namespace:UI.ViewModels"
+        xmlns:views="clr-namespace:UI.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="UI.Views.MainWindow"
-        Title="UI">
+        Title="Media Manager">
     <Design.DataContext>
         <viewModels:MainWindowViewModel/>
     </Design.DataContext>
-    <Panel>
-        <TextBlock Text="Hello world"></TextBlock>
-    </Panel>
+    <Grid ColumnDefinitions="150, *" RowDefinitions="50, *, 10">
+        <views:Tree Click="Tree_OnClick" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" DataContext="{Binding DirectoryTree}" />
+        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Name="SourceDirectory" Text="{Binding SourceDirectory}"></TextBlock>
+            <Button Command="{Binding OnClickCommand}" Name="Button">Click Me</Button>
+        </StackPanel>
+        <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto" Name="GridScrollViewer">
+            <ItemsControl Margin="0" Items="{Binding Items}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"
+                                   Margin="3"
+                                   Width="{Binding ElementName=GridScrollViewer, Path=Bounds.Width}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <views:MediaItem Margin="0 0 5 5" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
 </Window>

@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:UI.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="UI.Views.Tree">
+    <Design.DataContext>
+        <viewModels:TreeNodeViewModel/>
+    </Design.DataContext>
+
+    <TreeView Items="{Binding Directories}">
+        <TreeView.DataTemplates>
+            <TreeDataTemplate DataType="viewModels:TreeNodeViewModel" ItemsSource="{Binding Directories}">
+                <Panel HorizontalAlignment="Left">
+                    <Button Name="Button"
+                            HorizontalAlignment="Center"
+                            Background="White"
+                            Click="Button_OnClick">
+                        <TextBlock Foreground="Black" Text="{Binding Directory}" />
+                    </Button>
+                </Panel>
+            </TreeDataTemplate>
+            <DataTemplate DataType="viewModels:TreeNodeViewModel">
+                <TextBlock Text="{Binding Directory}" />
+            </DataTemplate>
+        </TreeView.DataTemplates>
+    </TreeView>
+</UserControl>
