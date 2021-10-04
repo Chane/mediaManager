@@ -13,8 +13,8 @@
     <Grid ColumnDefinitions="150, *" RowDefinitions="50, *, 10">
         <views:Tree Click="Tree_OnClick" Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" DataContext="{Binding DirectoryTree}" />
         <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+            <TextBlock Name="SourceDirectoryLabel" Text="Displaying Images and Videos for " />
             <TextBlock Name="SourceDirectory" Text="{Binding SourceDirectory}"></TextBlock>
-            <Button Command="{Binding OnClickCommand}" Name="Button">Click Me</Button>
         </StackPanel>
         <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto" Name="GridScrollViewer">
             <ItemsControl Margin="0" Items="{Binding Items}">

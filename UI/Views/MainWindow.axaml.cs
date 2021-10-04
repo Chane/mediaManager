@@ -30,7 +30,7 @@ namespace UI.Views
             var viewModel = (MainWindowViewModel)this.DataContext!;
             viewModel.SourceDirectory = clickedDirectory;
 
-            await viewModel.OnClickCommand();
+            await viewModel.Refresh();
         }
     }
 }

@@ -17,7 +17,7 @@ namespace UI.ViewModels
         private readonly DirectoryExplorer directoryExplorer;
         private readonly FileHandler fileHandler;
         private readonly IEnumerable<string> directories;
-        private string sourceDirectory = string.Empty;
+        private string sourceDirectory = "No folder selected";
 
         public MainWindowViewModel()
         {
@@ -50,7 +50,7 @@ namespace UI.ViewModels
             set => this.RaiseAndSetIfChanged(ref this.sourceDirectory, value);
         }
 
-        public async Task OnClickCommand()
+        public async Task Refresh()
         {
             this.Items.Clear();
             var cancellationTokenSource = new CancellationTokenSource();
