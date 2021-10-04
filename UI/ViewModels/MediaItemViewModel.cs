@@ -38,7 +38,7 @@ namespace UI.ViewModels
         }
 
         public FileType Type { get; }
-        public string Dimensions => $"{this.height} x {this.width}";
+        public string Dimensions => $"{this.width} x {this.height}";
         public string FileSize => SizeForDisplay(this.fileSize);
         public string? Duration { get; }
 
