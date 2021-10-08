@@ -23,11 +23,12 @@ namespace UI.ViewModels
         {
             var fileSystem = new FileSystem();
             var ffmpegWrapper = new FFmpegWrapper();
+            var imageWrapper = new ImageWrapper();
 
             var workingDirectoryProvider = new WorkingDirectoryProvider(fileSystem);
             var thumbnailCacheLocation = new ThumbnailCacheLocationProvider(workingDirectoryProvider);
             var thumbnailCreator = new ThumbnailCreator(fileSystem, thumbnailCacheLocation);
-            var imageInfoProvider = new ImageInfoProvider(thumbnailCreator);
+            var imageInfoProvider = new ImageInfoProvider(thumbnailCreator, fileSystem, imageWrapper);
             var videoInfoProvider = new VideoInfoProvider(fileSystem, ffmpegWrapper, thumbnailCacheLocation, thumbnailCreator);
 
             // Initialize core components with DI
