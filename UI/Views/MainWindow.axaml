@@ -15,6 +15,8 @@
         <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
             <TextBlock Name="SourceDirectoryLabel" Text="Displaying Images and Videos for " />
             <TextBlock Name="SourceDirectory" Text="{Binding SourceDirectory}"></TextBlock>
+            <CheckBox IsChecked="{Binding ShowImages}" Click="Filter_OnClick" Name="ShowImages" IsEnabled="{Binding Loaded}">Images</CheckBox>
+            <CheckBox IsChecked="{Binding ShowVideo}" Click="Filter_OnClick" Name="ShowVideos" IsEnabled="{Binding Loaded}">Videos</CheckBox>
         </StackPanel>
         <ScrollViewer Grid.Column="1" Grid.Row="1" VerticalScrollBarVisibility="Auto" Name="GridScrollViewer">
             <ItemsControl Margin="0" Items="{Binding Items}">

@@ -41,6 +41,7 @@ namespace UI.ViewModels
         public string Dimensions => $"{this.width} x {this.height}";
         public string FileSize => SizeForDisplay(this.fileSize);
         public string? Duration { get; }
+        public bool Visible { get; set; }
 
         public void OnClickCommand()
         {

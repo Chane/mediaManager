@@ -32,5 +32,11 @@ namespace UI.Views
 
             await viewModel.Refresh();
         }
+
+        private void Filter_OnClick(object? sender, RoutedEventArgs e)
+        {
+            var viewModel = (MainWindowViewModel)this.DataContext!;
+            viewModel.ApplyFilter();
+        }
     }
 }

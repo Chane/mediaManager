@@ -6,8 +6,10 @@ using System.IO.Abstractions;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using DynamicData;
 using Engine;
 using Engine.Foundation;
+using Engine.Models;
 using Engine.Providers;
 using ReactiveUI;
 
@@ -47,6 +49,10 @@ namespace UI.ViewModels
 
         public ObservableCollection<MediaItemViewModel> Items { get; } = new ();
 
+        public bool ShowImages { get; set; } = true;
+
+        public bool ShowVideo { get; set; } = true;
+
         public string SourceDirectory
         {
             get => this.sourceDirectory;
@@ -80,12 +86,33 @@ namespace UI.ViewModels
                     }
 
                     var vm = new MediaItemViewModel(item);
+                    switch (vm.Type)
+                    {
+                        case FileType.Image when this.ShowImages:
+                        case FileType.Video when this.ShowVideo:
+                            vm.Visible = true;
+                            break;
+                    }
+
                     await vm.LoadCoverAsync();
                     this.Items.Add(vm);
                 }
             }
 
             this.Loaded = true;
+        }
+
+        public void ApplyFilter()
+        {
+            var images = this.Items.Where(i => i.Type == FileType.Image).ToList();
+            images.ForEach(i => i.Visible = this.ShowImages);
+
+            var videos = this.Items.Where(i => i.Type == FileType.Video).ToList();
+            videos.ForEach(i => i.Visible = this.ShowVideo);
+
+            this.Items.Clear();
+            this.Items.AddRange(images);
+            this.Items.AddRange(videos);
         }
 
         private void GenerateTreeView(string rootDirectory)
