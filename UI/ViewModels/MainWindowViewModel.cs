@@ -18,6 +18,7 @@ namespace UI.ViewModels
         private readonly FileHandler fileHandler;
         private readonly IEnumerable<string> directories;
         private string sourceDirectory = "No folder selected";
+        private bool loaded;
 
         public MainWindowViewModel()
         {
@@ -51,8 +52,15 @@ namespace UI.ViewModels
             set => this.RaiseAndSetIfChanged(ref this.sourceDirectory, value);
         }
 
+        public bool Loaded
+        {
+            get => this.loaded;
+            set => this.RaiseAndSetIfChanged(ref this.loaded, value);
+        }
+
         public async Task Refresh()
         {
+            this.Loaded = false;
             this.Items.Clear();
             var cancellationTokenSource = new CancellationTokenSource();
 
@@ -69,6 +77,8 @@ namespace UI.ViewModels
                     this.Items.Add(vm);
                 }
             }
+
+            this.Loaded = true;
         }
 
         private void GenerateTreeView(string rootDirectory)
