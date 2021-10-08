@@ -23,6 +23,22 @@ namespace UI.Views
             AvaloniaXamlLoader.Load(this);
         }
 
+        private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+        {
+            if (this.DataContext != null)
+            {
+                var cb = (ComboBox)sender!;
+                var cbi = (ComboBoxItem)cb.SelectedItem!;
+
+                var viewModel = (MainWindowViewModel)this.DataContext;
+                if (viewModel.Loaded)
+                {
+                    Enum.TryParse(cbi.Name, out SortBy sortBy);
+                    viewModel.ApplyOrder(sortBy);
+                }
+            }
+        }
+
         private async void Tree_OnClick(object? sender, RoutedEventArgs e)
         {
             var clickedDirectory = ((Tree)sender!).ClickedDirectory;

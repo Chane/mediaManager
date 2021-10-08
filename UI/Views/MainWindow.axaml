@@ -15,6 +15,11 @@
         <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
             <TextBlock Name="SourceDirectoryLabel" Text="Displaying Images and Videos for " />
             <TextBlock Name="SourceDirectory" Text="{Binding SourceDirectory}"></TextBlock>
+            <ComboBox SelectedIndex="0" SelectionChanged="SelectingItemsControl_OnSelectionChanged" IsEnabled="{Binding Loaded}">
+                <ComboBoxItem Name="SizeAsc">Size Asc</ComboBoxItem>
+                <ComboBoxItem Name="SizeDesc">Size Desc</ComboBoxItem>
+                <ComboBoxItem Name="Duration">Length Desc</ComboBoxItem>
+            </ComboBox>
             <CheckBox IsChecked="{Binding ShowImages}" Click="Filter_OnClick" Name="ShowImages" IsEnabled="{Binding Loaded}">Images</CheckBox>
             <CheckBox IsChecked="{Binding ShowVideo}" Click="Filter_OnClick" Name="ShowVideos" IsEnabled="{Binding Loaded}">Videos</CheckBox>
         </StackPanel>

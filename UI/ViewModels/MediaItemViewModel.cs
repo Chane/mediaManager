@@ -37,6 +37,7 @@ namespace UI.ViewModels
             }
         }
 
+        public long RawFileSize => this.fileSize;
         public FileType Type { get; }
         public string Dimensions => $"{this.width} x {this.height}";
         public string FileSize => SizeForDisplay(this.fileSize);

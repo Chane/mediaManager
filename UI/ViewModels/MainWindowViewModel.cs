@@ -115,6 +115,17 @@ namespace UI.ViewModels
             this.Items.AddRange(videos);
         }
 
+        public void ApplyOrder(SortBy sortBy)
+        {
+            var sortedCollection = SortViewModelItems(sortBy);
+
+            this.Items.Clear();
+            foreach (var j in sortedCollection)
+            {
+                this.Items.Add(j);
+            }
+        }
+
         private void GenerateTreeView(string rootDirectory)
         {
             var topLevelDirectories= this.directories
@@ -147,6 +158,17 @@ namespace UI.ViewModels
             }
 
             return node;
+        }
+
+        private ObservableCollection<MediaItemViewModel> SortViewModelItems(SortBy sortBy)
+        {
+            return sortBy switch
+            {
+                SortBy.Duration => new ObservableCollection<MediaItemViewModel>(this.Items.OrderByDescending(m => m.Duration)),
+                SortBy.SizeAsc => new ObservableCollection<MediaItemViewModel>(this.Items.OrderBy(m => m.RawFileSize)),
+                SortBy.SizeDesc => new ObservableCollection<MediaItemViewModel>(this.Items.OrderByDescending(m => m.RawFileSize)),
+                _ => new ObservableCollection<MediaItemViewModel>()
+            };
         }
     }
 }
