@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO.Abstractions;
 using System.Linq;
 using System.Threading;
@@ -72,6 +73,12 @@ namespace UI.ViewModels
                 foreach (var file in files)
                 {
                     var item = await this.fileHandler.HandleAsync(file, cancellationTokenSource.Token);
+                    if (item is null)
+                    {
+                        Debug.WriteLine($"Item is null {file}");
+                        continue;
+                    }
+
                     var vm = new MediaItemViewModel(item);
                     await vm.LoadCoverAsync();
                     this.Items.Add(vm);
