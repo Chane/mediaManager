@@ -73,6 +73,7 @@ namespace UI.ViewModels
 
             var source = this.directories.Where(d => d.Contains(this.SourceDirectory));
 
+            // TODO: There is a bug here where child directories will be included.
             foreach (var directory in source)
             {
                 var files = this.directoryExplorer.ListFiles(directory);
