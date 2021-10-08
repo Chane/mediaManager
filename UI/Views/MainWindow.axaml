@@ -34,7 +34,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <views:MediaItem Margin="0 0 5 5" />
+                        <views:MediaItem Margin="0 0 5 5" IsVisible="{Binding Visible}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
