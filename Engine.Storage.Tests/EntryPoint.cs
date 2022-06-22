@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Engine.Storage.Tests
 {
     [TestFixture]
-    [Ignore("Entry Point Tests")]
+    [Explicit("Entry Point Tests")]
     public class EntryPoint
     {
         [Test]
