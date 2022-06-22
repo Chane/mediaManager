@@ -8,6 +8,7 @@
             {
                 "CREATE TABLE VersionInformation ( Version INTEGER NOT NULL )",
                 "INSERT INTO VersionInformation (Version) VALUES (0)",
+                "CREATE TABLE DirectoryInfo ( Directory TEXT NOT NULL, File TEXT NOT NULL )",
             };
         }
     }
